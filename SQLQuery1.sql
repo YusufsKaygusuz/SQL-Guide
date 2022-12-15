@@ -170,6 +170,12 @@ Go
 Exec spKarisikMusteri 5
 Go
 
+IF OBJECT_ID('spBelirliMusteri') IS NOT NULL
+Begin
+	Drop Procedure spBelirliMusteri
+End
+Go
+
 -- Procedur, which fetches the specific customer's information
 Create or alter procedure spBelirliMusteri(@musteri_id NCHAR(5) = 'ANTON') 
 AS
@@ -177,3 +183,45 @@ AS
 Go
 Exec spBelirliMusteri 'VINET'
 Exec spBelirliMusteri Default
+Go
+
+-- If the customer ID is not given, we can write an SP that brings all customers, 
+-- and if so, only the customer whose ID is given
+
+Create or alter procedure spMusteri(@musteri_id NCHAR(5) = Null)
+AS
+	Select * From Customers Where CustomerID = ISNULL(@musteri_id, CustomerID)
+Go
+Exec spMusteri 'VINET'
+Exec spMusteri
+Go
+
+-- If the customer ID is not given, we can write an SP that brings all customers, 
+-- and if so, only the customer whose ID and city are given
+
+Create or alter procedure spMusteriler(@sehir NVARCHAR(15) = Null, @address NVARCHAR(60) = null)
+AS
+	Select * From Customers
+	Where 
+		City = ISNULL(@sehir,City)
+		And Address Like '%' + ISNULL(@address, Address) +'%'
+Go
+Exec spMusteriler 'London'
+Exec spMusteriler 'London', 'ge'
+Go
+/* In the SPs created so far, we have only used input parameters. But sometimes SP has one or more 
+we can also ask for value rotation. In this case, output parameters are used. Unless otherwise specified 
+parameters are treated as input by SQL.*/
+
+Create or alter procedure spMusterilerOut(@sehir NVARCHAR(15) = Null, @adres NVARCHAR(60) = Null, @RowCounter INT OUTPUT)
+As
+	Select * From Customers
+	Where City = ISNULL(@sehir,City)
+	And
+	Address Like '%' + ISNULL(@adres,Address) + '%'
+
+	Select @RowCounter = @@ROWCOUNT
+Go
+Declare @finderCount INT
+Exec spMusterilerOut 'London', Null, @finderCount OUTPUT
+Select @finderCount
