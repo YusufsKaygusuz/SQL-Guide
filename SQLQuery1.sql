@@ -227,3 +227,31 @@ Exec spMusterilerOut 'London', Null, @finderCount OUTPUT
 Select @finderCount
 
 -- Select Count(CustomerID) from Customers where Fax IS NULL
+Go
+
+Create or alter procedure spReturnOrnegi(@s1 int,@s2 int, @s int OUTPUT)
+As
+	Set @s = @s1 + @s2
+	Return @s1 * @s2
+Go
+
+Declare @toplam int, @carpma int
+Exec @carpma = spReturnOrnegi 8 ,5, @toplam Output
+Select @toplam, @carpma
+Go
+
+-- Procedur, which fetches the table
+-- If there is more than one select statement in the SP, 
+-- the results are added one after the other as if Union All was made.
+
+Create or alter procedure spTabloTipliDegisklenOrnegi
+AS
+Select FirstName, LastName, ReportsTo from Employees
+Select Address, City, 100 From Employees Where FirstName = 'Nancy'
+--Select FirstName, LastName, ReportsTo From Employees Where FirstName = 'Nancy'
+Go
+
+Declare @sonuclar Table(AD Varchar(50), Soyad Varchar(50), Amiri INT)
+Insert Into @sonuclar Exec spTabloTipliDegisklenOrnegi
+
+Select * From @sonuclar
