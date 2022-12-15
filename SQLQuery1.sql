@@ -150,7 +150,6 @@ AS
 Go
 Select * From view_GenelSatislar Where CHK = 'VINET'
 
-
 /* Homework
 Use randevu_sistemi
 Select * from dbo.tblHasta
