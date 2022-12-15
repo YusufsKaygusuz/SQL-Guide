@@ -225,3 +225,5 @@ Go
 Declare @finderCount INT
 Exec spMusterilerOut 'London', Null, @finderCount OUTPUT
 Select @finderCount
+
+-- Select Count(CustomerID) from Customers where Fax IS NULL
