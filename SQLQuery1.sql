@@ -280,3 +280,85 @@ Exec spResultSetOrnegi With Result Sets
 ,
 (UrunAdi Varchar(50), Birim_Fiyat INT, UnitsInStock varchar(50), UrunDurumu Varchar(20) ) --Second Result
 )
+Go
+
+Select top 1 ProductName, UnitPrice
+	from Products 
+	order by UnitPrice desc
+
+Go
+
+
+
+Create Type typSatisEkibi As Table
+(
+	saticiID int,
+	AdSoyad Varchar(50)
+)
+Go
+
+
+Create or alter procedure spSatisRaporu(@saticilar AS typSatisEkibi Readonly)
+As
+Begin
+Set NOCOUNT ON
+	SELECT S.adsoyad,
+		C.companyName,
+		Sum(O.freight)
+	From Orders O
+		inner join Customers C ON C.CustomerID = O.CustomerID
+		inner join @saticilar S ON S.saticiID = O.EmployeeID
+	Group BY S.AdSoyad, C.CompanyName
+	Set Nocount off
+End
+Go
+
+Declare @satis_elemanlari AS typSatisEkibi
+Insert Into @satis_elemanlari Select EmployeeID, FirstName + ' ' +LastName from Employees
+Select * From @satis_elemanlari
+Exec spSatisRaporu @satis_elemanlari
+Go
+
+If OBJECT_ID('RegionTablosuLoglari') IS NOT NULL
+	Drop Table RegionTablosuLoglari
+Go
+
+Create Table RegionTablosuLog
+(
+	id INT NOT NULL IDENTITY(1,1) Primary Key,
+	tarih_saat datetime,
+	islem Varchar(10) NOT NULL,
+	yeni_deger Varchar(50),
+	eski_deger Varchar(50)
+)
+Go
+Insert into Region
+Output GETDATE(), 'Insert', inserted.RegionDescription, null Into RegionTablosuLog
+Values(5,'Test')
+Go
+
+Select * from Region
+select * from RegionTablosuLog
+Go 
+
+Update Region
+Set RegionDescription='NONE'
+Output GETDATE(), 'Update', inserted.RegionDescription, deleted.RegionDescription
+into RegionTablosuLog
+Where RegionDescription = 'Test'
+Go
+
+Select * From Region
+Select * From RegionTablosuLog
+Go
+
+
+Delete From Region
+Output GETDATE(), 'Delete', Null, deleted.RegionDescription
+into RegionTablosuLog
+Where RegionDescription = 'NONE'
+Go
+
+Select * From Region
+Select * From RegionTablosuLog
+Go
