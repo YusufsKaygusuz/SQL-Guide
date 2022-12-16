@@ -153,7 +153,7 @@ Go
 
 
 -- Creating Standart Procedur
-Create Procedure spTumMusteriler AS
+Create or alter Procedure spTumMusteriler AS
 	Select * from Customers
 Go
 
@@ -163,7 +163,7 @@ Exec spTumMusteriler
 Go
 
 -- Query fetching n randomly selected customers each time called
-Create Procedure spKarisikMusteri(@n INT) AS
+Create or alter Procedure spKarisikMusteri(@n INT) AS
 	Select Top (@n) * From Customers Order By NEWID()
 Go
 
@@ -255,3 +255,28 @@ Declare @sonuclar Table(AD Varchar(50), Soyad Varchar(50), Amiri INT)
 Insert Into @sonuclar Exec spTabloTipliDegisklenOrnegi
 
 Select * From @sonuclar
+Go
+
+-- If we wanna solving this problem
+create or alter procedure spResultSetOrnegi
+AS
+	Select 'Dear' +' '+ Title, FirstName, LastName  From Employees
+	--Select ProductName, UnitPrice, UnitsInStock From Products where UnitPrice >20 Order By UnitPrice DESC
+	Select ProductName, 
+	UnitPrice, 
+	'Last ' + Convert(varchar(10) ,UnitsInStock) + ' products left',
+	Case 
+	When UnitPrice <= 20 Then 'under 20$'
+	When UnitPrice <= 50 and UnitPrice > 20 Then 'best selling'
+	Else 'Elegant'
+	End
+	From Products
+	Order By UnitPrice Desc
+Go
+Exec spResultSetOrnegi With Result Sets
+(
+(Unvan Varchar(100) ,Ad Varchar(10), Soyad Varchar(10) )
+--(Unvan Varchar(100) ,Ad Varchar(10), Soyad Varchar(10) ) --First Result
+,
+(UrunAdi Varchar(50), Birim_Fiyat INT, UnitsInStock varchar(50), UrunDurumu Varchar(20) ) --Second Result
+)
