@@ -80,3 +80,12 @@ Exec spUrunKategoriSatislari 1997,1
 Exec spUrunKategoriSatislari 1997,2
 Go
 
+Create or alter view vwSevkiyatCalisma
+AS
+	Select S.CompanyName AS sevkiyatciFirma,
+	Count(*) As calismaSayisi
+	From Orders O inner join Shippers S On S.ShipperID = O.ShipVia
+	Group By S.CompanyName
+Go
+Select * From vwSevkiyatCalisma
+Go
