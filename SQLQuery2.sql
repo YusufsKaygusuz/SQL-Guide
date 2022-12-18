@@ -89,3 +89,65 @@ AS
 Go
 Select * From vwSevkiyatCalisma
 Go
+
+
+Select COUNT(*) AS BeforeTransaction From Region
+Declare @hata INT
+
+Begin Transaction
+Insert Region Values(5, 'Test')
+Set @hata = @@ERROR
+IF @hata<>0 GOTO Hata_Duzeltme
+Select COUNT(*) As MiddleTransaction, @hata AS HataKodu From region
+
+Insert Region Values(5,'Test') --PK Hatasý
+Set @hata = @@ERROR
+IF @hata<>0 Goto Hata_Duzeltme
+Commit
+
+Hata_Duzeltme:
+Select @@ERROR AS HataKodu
+IF @hata<>0
+Begin
+Rollback
+End
+
+Select COUNT(*) AS AfterTransaction, @hata As HataKodu From Region
+
+
+--Delete From Region where RegionID = 5
+--Select * from Region
+
+Select COUNT(*) AS BeforeTransaction From Region
+Declare @Hata2 int
+
+Begin Transaction
+Insert Region Values(5,'Test')
+Set @Hata2 = @@ERROR
+IF @Hata2<> 0 Goto hata_duzeltme
+Select COUNT(*) As CenterTransaction, @Hata2 AS hataKodu From Region
+Save Tran Check_Point
+
+Insert Region Values(5,'Test') -- Error of Primary Key
+Set @Hata2 = @@ERROR
+IF @Hata2<> 0 Goto hata_duzeltme
+Commit
+
+hata_duzeltme:
+If @Hata2 <> 0
+Begin 
+IF XACT_STATE()<>-1
+Begin
+	Rollback Tran Check_Point
+	Commit
+	Print 'It have been come back to checkpoint'
+	End
+Else
+Rollback
+End
+
+Select COUNT(*) As AfterTransaction, @Hata2 AS HataKodu From Region
+
+
+--Delete From Region where RegionID = 5
+--Select * from Region
