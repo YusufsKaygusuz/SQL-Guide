@@ -199,7 +199,7 @@ As
 			Rollback
 		End
 	Else
-		Update Customers Set ModifiedDate = GETDATE() Where CustomerID IN (Select IDENT_CURRENT From @MusID)
+		Update Customers Set ModifiedDate = GETDATE() Where CustomerID IN (Select ID From @MusID)
 Go
 
 	Create Trigger trgCustomerDelete ON Customers After Delete
