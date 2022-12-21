@@ -146,8 +146,63 @@ Else
 Rollback
 End
 
-Select COUNT(*) As AfterTransaction, @Hata2 AS HataKodu From Region
+--Introduction to Trigger --
 
+Select COUNT(*) As AfterTransaction, @Hata2 AS HataKodu From Region
 
 --Delete From Region where RegionID = 5
 --Select * from Region
+
+IF OBJECT_ID('ConstBakiye', 'D') IS NOT NULL  --D : Default Constraint
+	Alter Table Customers Drop Constraint ConstBakiye
+Go
+
+IF Col_Length('Customers', 'Bakiye') IS NOT NULL
+	Alter Table Customers Drop Column Bakiye
+Go
+
+IF Col_Length('Customers', 'CreatedDate') IS NOT NULL
+	Alter Table Customers Drop Column CreatedDate
+Go
+
+IF Col_Length('Customers', 'ModifiedDate') IS NOT NULL
+	Alter Table Customers Drop Column ModifiedDate
+Go
+
+Alter Table Customers Add Bakiye Money Constraint ConstBakiye Default 0 with values
+Go
+
+Alter Table Customers Add CreatedDate DateTime
+Go 
+
+Alter Table Customers Add ModifiedDate DateTime
+Go
+
+Create Trigger trgCustomersInsert ON Customers After Insert
+As
+	Declare @MusID Nchar(5) = (Select CustomerID From inserted)
+	Alter Table Customers Disable Trigger trgCustomersUpdate
+	
+	Update Customers Set CreatedDate = GETDATE() Where CustomerID = @MusID
+	
+	Alter Table Customers Enable Trigger trgCustomersUpdate
+	Go
+
+Create Trigger trgCustomersUpdate ON Customers After Update
+As
+	Declare @MusID Table (ID Nchar(5)) -- More one data may be updated in same time So we shall use table
+	Insert Into @MusID Select CustomerID From inserted
+
+	IF UPDATE(CustomerID)
+		Begin
+			Raiserror ('!!! Customer ID do not update. Update was cancelled',16,1 )
+			Rollback
+		End
+	Else
+		Update Customers Set ModifiedDate = GETDATE() Where CustomerID IN (Select IDENT_CURRENT From @MusID)
+Go
+
+	Create Trigger trgCustomerDelete ON Customers After Delete
+	AS
+		Insert Into CustomersDeleted Select *, GETDATE() From deleted
+Go
