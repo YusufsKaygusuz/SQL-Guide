@@ -22,6 +22,13 @@ Go
 Select dbo.fn_toplam_doktor(5)
 Go
 
+IF OBJECT_ID('hastane_bilgileri') IS NOT NULL
+Begin
+Drop View hastane_bilgileri;
+Print 'Silindi'
+End
+Go
+
 -- Herhangi bir hastaneye ait bilgileri getiren View
 Create or alter View hastane_bilgileri
 As
@@ -54,6 +61,11 @@ Go
 -- z = Hasta id'sini temsil ediyor.
 -- Sisteme giriş yapmak yapmak isteyen kullanıcıdan aldığımız bilgiler ile kullanıcı eğer sistemde kayıtlı ve doğru 
 -- şifreyi girerse sisteme girer. HastaTC veritabanında yoksa verilen bilgiler dahilinde veritabanına eklenir.
+
+IF OBJECT_ID ('spHastaKontrol') IS NULL
+	Drop Procedure spHastaKontrol
+Go
+
 
 Create or alter procedure spHastaKontrol(@HastaTC Varchar(11), @hastaAdı Varchar(20), @hastaSoyadı Varchar(20),
 @Login varchar(20), @newPassword varchar(20))
@@ -102,3 +114,23 @@ End
 Go
 
 Exec spHastaKontrol '49732105614', 'Süleyman', 'Abay', 'pass123', Null
+Go
+
+/* Kayıt oluşturulan hastanın TC kimlik numarası 11 haneden az ise update işlemine izin verilmez.
+*/
+
+IF OBJECT_ID('trgHastaUpdate') IS NOT NULL
+Drop Trigger trgHastaUpdate
+Go
+
+Create or alter trigger trgHastaUpdate ON tblHasta After Update
+AS
+Declare @HastaTc Varchar(11) = (Select HastaTC From inserted)
+IF (Len(@HastaTc)<11)
+Begin
+Raiserror ('Hasta Tc numarası 11 haneden küçük olamaz', 16,1)
+Rollback
+End
+Go
+
+--İlaç var Tablosundaki ilaç adeti değiştirilebilir.
