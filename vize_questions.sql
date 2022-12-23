@@ -7,7 +7,7 @@ Begin
 End
 
 Go
--- Hastane idsi verilen hastanenin �al��an doktor say�s�n� d�nen fonksiyon
+-- Hastane idsi verilen hastanenin çalışan doktor sayısını dönen fonksiyon
 Create or alter function fn_toplam_doktor(@hastane_id int)
 Returns int
 AS
@@ -29,7 +29,7 @@ As
 	Convert(Char(15), kurulus_tarihi, 103) as hastane_kurulusu,
 	dbo.fn_toplam_doktor(HST.ID) as toplam_doktor_sayisi,
 	Case
-	When YEAR(kurulus_tarihi) <= 1990 Then '�ok Eski'
+	When YEAR(kurulus_tarihi) <= 1990 Then 'Çok Eski'
 	When Year(kurulus_tarihi) > 1990 and Year(kurulus_tarihi)<= 2000 Then 'Eski'
 	Else 'Yeni'
 	End As yeni_eski,
@@ -49,3 +49,56 @@ toplam_doktor_sayisi,
 sehir_bazinda_hastane_sayilari
 from hastane_bilgileri as hb
 	inner join TblHastaneTipi as httip ON httip.ID = hb.hastane_Tipi
+
+Go
+-- z = Hasta id'sini temsil ediyor.
+-- Sisteme giriş yapmak yapmak isteyen kullanıcıdan aldığımız bilgiler ile kullanıcı eğer sistemde kayıtlı ve doğru 
+-- şifreyi girerse sisteme girer. HastaTC veritabanında yoksa verilen bilgiler dahilinde veritabanına eklenir.
+
+Create or alter procedure spHastaKontrol(@HastaTC Varchar(11), @hastaAdı Varchar(20), @hastaSoyadı Varchar(20),
+@Login varchar(20), @newPassword varchar(20))
+As
+Declare @HastaID int;
+Declare @password varchar(20);
+
+Select @password = Login from TblHasta
+Select @HastaID = H.z From TblHasta H
+	inner join TblRandevu R On R.HastaID = H.z
+	Where H.HastaTC = @HastaTC
+	Begin Transaction
+
+if(@password = @login)
+Begin
+	Print('Giriş Başarılı')
+	commit
+
+	Begin Try
+	--Şifre eğer null tanımlanmışsa catch satırlarına gidilir.
+	update tblHasta set [Login] = @newPassword
+	Commit
+	end try
+
+	Begin Catch
+	raiserror('Şifre boş olamaz',15,1)
+	rollback
+	end catch
+End
+
+Else
+Begin
+	if(@HastaTC Not IN (Select HastaTC from TblHasta))
+	Begin
+	insert into TblHasta values(@HastaTC,@hastaAdı,@hastaSoyadı,Null, Null,Null,Null,Null,@Login)
+	print ('Kayıt başarılı')
+	commit
+	End
+
+	Else
+	Begin
+	raiserror('Girdiğiniz şifre doğru değil.',15,1)
+	rollback
+	End
+End
+Go
+
+Exec spHastaKontrol '49732105614', 'Süleyman', 'Abay', 'pass123', Null
