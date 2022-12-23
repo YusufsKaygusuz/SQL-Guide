@@ -147,7 +147,7 @@ Rollback
 End
 
 --Introduction to Trigger --
-
+/*
 Select COUNT(*) As AfterTransaction, @Hata2 AS HataKodu From Region
 
 --Delete From Region where RegionID = 5
@@ -206,3 +206,51 @@ Go
 	AS
 		Insert Into CustomersDeleted Select *, GETDATE() From deleted
 Go
+*/
+Go
+
+Create table DeletedValuesTable
+(
+	ID int,
+	Description Varchar(10),
+	DeletedDate DateTime
+)
+
+IF OBJECT_ID('trgRegionDeleted') IS NOT NULL
+Drop Trigger trgRegionDeleted
+Go
+
+Create or alter Trigger trgRegionDelete ON Region After Delete
+As
+	Insert into DeletedValuesTable Select *, GETDATE() From deleted
+Go
+
+Create or alter Trigger trgRegionUpdate ON Region After Update
+As 
+	Declare @InsertRegionID Table(id INT)
+	insert into @InsertRegionID Select RegionID From inserted
+
+	IF Update(RegionID)
+		Begin
+			Raiserror('Customer ID does not updated So updated was cancalled.',16,1)
+			Rollback
+		End
+	Else
+		Update Region Set RegionDescription= ' ' + CONVERT(Varchar(20), GetDate()) 
+		Where RegionID IN (Select id From @InsertRegionID)
+Go
+
+Insert Into Region Values(5,'Test1')
+Select * From Region
+Insert Into Region Values(6,'Test2')
+Select * From Region
+--update Region set RegionID = 7 where RegionID=5
+Select * From Region
+update Region set RegionDescription = 'Test_5' where RegionID = 5 
+Select * From Region
+Go
+
+Select * From Region
+Delete From Region Where RegionID IN (5,6)
+Select * From Region
+Select * From DeletedValuesTable Order By ID Asc
