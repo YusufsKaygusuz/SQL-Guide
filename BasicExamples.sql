@@ -5,13 +5,13 @@ ID INT IDENTITY(1,1) PRIMARY KEY,
 	Soyad VARCHAR(50) NOT NULL,
 	DogTrh DATE NOT NULL,
 	Yas AS DATEDIFF(yy, DogTrh, GETDATE()),
-	IlkOlcumTarihi DATE, -- Ilk �l��len kilo degerinin girildigi tarih
-	BaslangicAgirlik FLOAT, -- Ilk �l��len kilogram degeri
-	SonOlcumTarihi DATE, -- En son �l��len kilogram degerinin girildigi tarih
-	MevcutAgirlik FLOAT, -- En son �l��len kilogram degeri		
+	IlkOlcumTarihi DATE, -- Ilk ölçülen kilo degerinin girildigi tarih
+	BaslangicAgirlik FLOAT, -- Ilk ölçülen kilogram degeri
+	SonOlcumTarihi DATE, -- En son ölçülen kilogram degerinin girildigi tarih
+	MevcutAgirlik FLOAT, -- En son ölçülen kilogram degeri		
 	HedefAgirlik FLOAT NOT NULL, -- Kullanicinin hedefledigi kilogram degeri
 	Boy FLOAT NOT NULL, -- CM olarak girilir
-	KullaniciTipi TINYINT NOT NULL DEFAULT 0 -- 0:�cretsiz, 1:�cretli
+	KullaniciTipi TINYINT NOT NULL DEFAULT 0 -- 0:Ücretsiz, 1:Ücretli
 )
 Go
 
@@ -25,10 +25,10 @@ CREATE TABLE tblOlcum_
 Go
 
 /*
-Verilen boy (metre cinsinden) ve kilo (kg cinsinden) degerlerine g�re V�cut Kitle Indeksi (Body Mass Index, BMI) 
-degerini geri d�nen bir fonksiyon yaz�n�z.
+Verilen boy (metre cinsinden) ve kilo (kg cinsinden) degerlerine göre Vücut Kitle Indeksi (Body Mass Index, BMI) 
+degerini geri dönen bir fonksiyon yazınız.
 	BMI degeri, KILO / (BOY * BOY) seklinde hesaplanmaktadir.
-	Sonu� degeri noktadan sonra iki basamak olacak sekilde yuvarlanalarak d�nd�r�lmelidir
+	Sonuç degeri noktadan sonra iki basamak olacak sekilde yuvarlanalarak döndürülmelidir
 */
 Create or alter function fncBodyMassIndex(@weight Float, @height Float)
 Returns Float
@@ -42,12 +42,12 @@ Go
 
 /*
 Sistemde kayitli kullanicilarin bilgilerini asagidaki sekilde getiren bir view yaziniz.
-		Ad Soyad | Yas | Hedef Agirlik | Baslangi� Agirlik | Son �l��m | Mevcut Agirlik | Verilen Kilo | Durum | BMI
+		Ad Soyad | Yas | Hedef Agirlik | Baslangiç Agirlik | Son Ölçüm | Mevcut Agirlik | Verilen Kilo | Durum | BMI
 	
-	�	Son �l��m: En son kilo �l��m tarihinden o ana kadar ge�en g�n sayisi g�sterilecektir.
-	�	Verilen Kilo: Mevcut agirlik ile baslangic agirligin farklidir.
-	�	Durum: Eger mevcut agirlik hedef agirliktan k���k ya da esit ise �Hedefe Ulasildi�, aksi halde aralarindaki fark yazilmalidir.
-	�	BMI: Ilk sorudaki fonksiyon �agrilacaktir. (sistemde boy bilgisinin cm olarak kayitli olduguna dikkat ediniz)
+	•	Son Ölçüm: En son kilo ölçüm tarihinden o ana kadar geçen gün sayisi gösterilecektir.
+	•	Verilen Kilo: Mevcut agirlik ile baslangic agirligin farklidir.
+	•	Durum: Eger mevcut agirlik hedef agirliktan küçük ya da esit ise “Hedefe Ulasildi”, aksi halde aralarindaki fark yazilmalidir.
+	•	BMI: Ilk sorudaki fonksiyon çagrilacaktir. (sistemde boy bilgisinin cm olarak kayitli olduguna dikkat ediniz)
 */
 
 Create or alter view vwKayitliKullanici As
@@ -55,11 +55,11 @@ Create or alter view vwKayitliKullanici As
 			Yas,
 			HedefAgirlik,
 			BaslangicAgirlik,
-			DATEDIFF(Day,SonOlcumTarihi,GETDATE()) as SonOlc�m,
+			DATEDIFF(Day,SonOlcumTarihi,GETDATE()) as SonOlcüm,
 			MevcutAgirlik,
 			MevcutAgirlik - BaslangicAgirlik as verilenKilo,
 			Case 
-				When MevcutAgirlik<HedefAgirlik then 'Hedefe Ula��ld�!'
+				When MevcutAgirlik<HedefAgirlik then 'Hedefe Ulaşıldı!'
 				else 'Geriye Kalan: ' + Convert(Varchar(10), (MevcutAgirlik - BaslangicAgirlik)) + ' KG'
 			End As Durum,
 			dbo.fncBodyMassIndex(MevcutAgirlik, Boy/100) as BMI
@@ -68,12 +68,12 @@ Create or alter view vwKayitliKullanici As
 Go
 
 /*
-Bir kullanicinin herhangi bir tarihteki kilo �lc�m degerini kaydedebilecek prosed�r� yaziniz. Kisitlar b�yledir: 
-		�	Prosed�re tarih belirtilmedigi takdirde ge�erli sistem tarihi kullanilacaktir.
-		�	Ayni tarih i�in birden fazla giris yapalabilmektedir. Ancak sistemde son girilen kilo bilgisi tutulmaktadir. 
-Diger bir deyisle eger belirtilen tarih i�in kayit yoksa yeni kayit olusturulacak ama varsa o kayittaki kilo bilgisi g�ncellenecektir.
-		�	Girilen kilo degeri kullanicinin hedef kilo degerinden k���k ya da esit ise 
-		�Tebrikler hedefinize ulastiniz� mesaji, degilse ��zg�n�m hedefinize hen�z ulasamadiniz� mesaji g�r�nt�lenecektir.
+Bir kullanicinin herhangi bir tarihteki kilo ölcüm degerini kaydedebilecek prosedürü yaziniz. Kisitlar böyledir: 
+		•	Prosedüre tarih belirtilmedigi takdirde geçerli sistem tarihi kullanilacaktir.
+		•	Ayni tarih için birden fazla giris yapalabilmektedir. Ancak sistemde son girilen kilo bilgisi tutulmaktadir. 
+Diger bir deyisle eger belirtilen tarih için kayit yoksa yeni kayit olusturulacak ama varsa o kayittaki kilo bilgisi güncellenecektir.
+		•	Girilen kilo degeri kullanicinin hedef kilo degerinden küçük ya da esit ise 
+		“Tebrikler hedefinize ulastiniz” mesaji, degilse “Üzgünüm hedefinize henüz ulasamadiniz” mesaji görüntülenecektir.
 */
 
 Create or alter procedure spOlcumEkle(@KisiID int, @value Float, @tarih Date = NULL) 
@@ -98,12 +98,12 @@ Raiserror('Sorry, You do not reach the goal.',10,1)
 Go
 
 /*
--Herhangi bir �l��m degeri girildiginde, g�ncellendiginde ya da silindiginde �alisacak olan triggeri yaziniz
-(ayri ayri �� tane degil hepsi i�in tek bir tane yazilmalidir).
--S�z konusu trigger, kullanici tablosundaki IlkOlcumTarihi, BaslangicAgirlik, SonOlcumTarihi, ve MevcutAgirlik
-alanlarini ilgili kullanicinin t�m �l��m degerlerini dikkate alarak g�ncellemelidir.
--�l��m tablosu �zerinde toplu g�ncelleme ve silme islemlerinin yapilmadigini varsayiniz.
-(yani inserted ve deleted her zaman tek bir kullaniciya ait satirlari d�necektir)
+-Herhangi bir ölçüm degeri girildiginde, güncellendiginde ya da silindiginde çalisacak olan triggeri yaziniz
+(ayri ayri üç tane degil hepsi için tek bir tane yazilmalidir).
+-Söz konusu trigger, kullanici tablosundaki IlkOlcumTarihi, BaslangicAgirlik, SonOlcumTarihi, ve MevcutAgirlik
+alanlarini ilgili kullanicinin tüm ölçüm degerlerini dikkate alarak güncellemelidir.
+-Ölçüm tablosu üzerinde toplu güncelleme ve silme islemlerinin yapilmadigini varsayiniz.
+(yani inserted ve deleted her zaman tek bir kullaniciya ait satirlari dönecektir)
 */
 Create or alter Trigger trgKullaniciKilolariGuncelle ON tblOlcum After insert, update, delete as
 Declare @KID INT, @KID1 INT, @KID2 INT 
@@ -129,10 +129,10 @@ Set
 Go
 
 /*
-Herhangi bir �l��m degeri girildiginde �alisacak olan bir baska trigger daha yaziniz.
-Bu trigger�dan beklenen, eger kullanici �cretsiz tipli bir kullanici ise ve toplamda yedi adet �l��m degeri
+Herhangi bir ölçüm degeri girildiginde çalisacak olan bir baska trigger daha yaziniz.
+Bu trigger’dan beklenen, eger kullanici ücretsiz tipli bir kullanici ise ve toplamda yedi adet ölçüm degeri
 ilgili tabloya girilmis ise sekizinci girisin olmasini engellemektir.
-B�yle bir durumda ��cretsiz kullanicilar en �ok 7 tane �l��m girebilirler� seklinde bir mesaj da g�sterilmelidir.
+Böyle bir durumda “Ücretsiz kullanicilar en çok 7 tane ölçüm girebilirler” seklinde bir mesaj da gösterilmelidir.
 */
 
 Create or alter trigger tr7DayControl ON tblOlcum after insert as
@@ -150,4 +150,149 @@ Raiserror ('!!!You reached your limit. You can searh other packets',16,1)
 Rollback
 End
 Go
+
+
+CREATE TABLE tblOgrenci
+(
+	ogrno CHAR(9) PRIMARY KEY,
+	ad VARCHAR(50) NOT NULL,
+	soyad VARCHAR(50) NOT NULL,
+	GNO FLOAT, -- Öðrencinin genel not ortalamasý. 100 üzerindendir
+	donem TINYINT NOT NULL DEFAULT 0, -- kayýt yenileme oldukça bu deðer 1 arttýrýlýr. Normal süre 8 dönemdir
+	aktif TINYINT NOT NULL DEFAULT 1 -- 0: bitirmiþ, 1: devam ediyor, 2: dondurmuþ
+)
+
+CREATE TABLE tblOgretimOyesi
+(
+	tc CHAR(11) PRIMARY KEY,
+	unvan VARCHAR(10),
+	ad VARCHAR(50) NOT NULL,
+	soyad VARCHAR(50) NOT NULL
+)
+
+CREATE TABLE tblDers
+(
+	kod VARCHAR(10) PRIMARY KEY,
+	ad VARCHAR(30) NOT NULL,
+	kredi TINYINT NOT NULL,
+	ogr_uyesi_tc CHAR(11) NOT NULL FOREIGN KEY REFERENCES tblOgretimOyesi(tc),
+	kontenjan INT NOT NULL CHECK (kontenjan >= 0),
+	kayitli_ogr INT NOT NULL DEFAULT 0
+)
+
+CREATE TABLE tblOgrenciDersKayit
+(
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	ogr_no CHAR(9) NOT NULL FOREIGN KEY REFERENCES tblOgrenci(ogrno),
+	ders_kodu VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES tblDers(kod),
+	vize INT,
+	final INT,
+	ort AS vize * 0.3 + final * 0.7 -- bir öðrencinin bir dersteki ortalamasý
+)
+GO
+
+/*
+Verilen yüzlük (100) not deðerini dörtlük (4) not deðerine çevirecek fonksiyonu yazýnýz. Çevrim için formül:
+	DörtÜzerindenNot = -0.283 + 0.043 * YüzÜzerindenNot
+*/
+Create or alter function fncDortlukPuan (@grade int)
+Returns Float
+AS
+Begin
+	return -0.283 + 0.043 * @grade
+End
+Go
+
+Select dbo.fncDortlukPuan(82)
+Go
+
+Create or alter view vwStudentInfo AS
+Select ogrno as studentNumber,
+ad +' ' +soyad as NameSurname,
+Case when donem>8 then 'öğrenci Dönem Uzatmıştır' else 'normal'
+end as donem,
+GNO,
+case when GNO>90 then 'AA'
+	 when GNO>80 then 'BB'
+	 when GNO>70 then 'CC'
+	 WHEN GNO >= 60 THEN 'DD'
+	 ELSE 'FF'
+End as HarfNotu,
+dbo.fncDortlukPuan(GNO) AS DortlukOrt,
+CASE
+				WHEN aktif = 0 THEN 'MEZUN OLMUÞ'
+				WHEN aktif = 1 THEN 'DEVAM EDÝYOR'
+				WHEN aktif = 2 THEN 'DONDURMUÞ'
+			END AS KayitDurumu
+FROM tblOgrenci 
+Go
+
+/*
+Öðrenci numarasý ve ders kodunu parametre olarak alýp ilgili ders kaydýný yapan Stored Procedure (SP) yazýnýz. Gereksinimler þöyledir:
+	•	Bir derse kayýt yapabilmek için o dersin kontenjanýnýn aþýlmamýþ olmasý gerekir. Eðer dersin kontenjaný dolmuþ ise, ders kaydý yapýlmamalý ve durumla ilgili bir hata mesajý gösterilmelidir
+	•	Bir öðrencinin bir ders için tek bir kaydý olmalýdýr. Eðer öðrenci ayný derse ikinci kez kayýt yapmak istiyorsa, ders kaydý yapýlmamalý ve durumla ilgili bir hata mesajý gösterilmelidir
+	•	Prosedür, phantom read eþ zamanlýlýk (concurrency) sorununu yaþatmayacak bir izolasyon seviyesini kullanmalýdýr
+	•	Ders kaydýný müteakip o dersin kayýtlý öðrenci sayýsý bir (1) arttýrýlmalýdýr
+*/
+Create or alter procedure spDersKayit(@ogrenciNo char(9), @dersKodu Varchar(10)) AS
+Begin
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+Declare @kontenjan int; 
+Declare @kayitli int;
+Select @kontenjan = kontenjan, @kayitli = kayitli_ogr from tblDers where kod = @dersKodu
+
+if(@kontenjan > @kayitli)
+	if Not Exists (Select * from tblOgrenciDersKayit where ogr_no = @ogrenciNo and ders_kodu = @dersKodu)
+	Begin
+		insert into tblOgrenciDersKayit values(@ogrenciNo, @dersKodu, Null, Null)
+		update tblDers set kayitli_ogr +=1 where kod = @dersKodu
+		commit
+	end
+	else
+	begin
+		RAISERROR('!!! BU DERSE ZATEN KAYITLISINIZ. TEKRARDAN KAYIT OLAMAZSINIZ. !!! ', 16, 1)																
+		ROLLBACK
+	end
+
+else
+BEGIN
+RAISERROR('!!! KONTENJAN YETERSÝZ. DERS KAYDI YAPILAMAZ. !!! ', 16, 1)			
+ROLLBACK
+END
+end
+Go
+
+/*
+Üstteki soru için bir Trigger yazýnýz. Gereksinimler þöyledir:
+	•	Ortalamasý 2’nin altýnda olan öðrenciler en çok 5 derse kayýt yaptýrabilirler
+	•	Hiçbir öðrenci 8’den fazla derse kaydolamaz
+
+*/
+Create trigger trgOgrenciDersSayisiKontrol ON tblOgrenciDersKayit After insert as 
+Begin
+	Declare @countKayit int = (Select COUNT(*) from tblOgrenciDersKayit Where ogr_no = (select ogr_no from inserted))
+	Declare @ort float = (Select DortlukOrt from vwStudentInfo where studentNumber = (Select ogr_no from inserted) )
+	IF @countKayit > 5 AND @ort < 2
+			BEGIN
+				RAISERROR('EN ÇOK 5 DERS SEÇEBÝLÝRSÝNÝZ...', 16, 1)
+				ROLLBACK
+			END
+		ELSE IF @countKayit > 8
+			BEGIN			
+				RAISERROR('EN ÇOK 8 DERS SEÇEBÝLÝRSÝNÝZ...', 16, 1)
+				ROLLBACK
+			END
+	END
+Go
+
+Create or alter trigger trgAcilanDersKontenjan On tblDers After Update as
+begin
+	IF UPDATE(kontenjan)
+			if Exists (Select * from inserted i where i.kontenjan - i.kayitli_ogr <0)
+			BEGIN
+						RAISERROR('KONTENJAN KAYITLI ÖÐRENCÝ SAYISINDAN DAHA AZ OLAMAZ', 16, 1)
+						ROLLBACK
+					END
+end
+go
 
