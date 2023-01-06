@@ -25,9 +25,9 @@ CREATE TABLE tblOlcum_
 GO
 
 /*
-	Verilen boy (metre cinsinden) ve kilo (kg cinsinden) deðerlerine göre Vücut Kitle Ýndeksi (Body Mass Index, BMI) deðerini geri dönen bir fonksiyon yazýnýz.
-	BMI deðeri, KÝLO / (BOY * BOY) þeklinde hesaplanmaktadýr.
-	Sonuç deðeri noktadan sonra iki basamak olacak þekilde yuvarlanýlarak döndürülmelidir
+	Write a function that returns the Body Mass Index (BMI) value based on the given height (in meters) and weight (in kg) values.
+	BMI value is calculated as WEIGHT / (SIZE * HEIGHT).
+	The resulting value should be rounded to two digits after the dot.
 */
 
 Create or alter Function fncBMI (@height float, @weight float)
@@ -67,3 +67,82 @@ Create or alter view vw_KullaniciInfo as
 	from tblKullanici
 go
 
+
+/*
+	Write the procedure that can record a User's weight measurement value on any date. The restrictions are:
+		•	If no date is specified in the procedure, the current system date will be used.
+		•	If there is no record for the specified date, a new record will be created, but if there is, the weight information in that record will be updated.
+		•	If the entered weight value is less than or equal to the user's target weight, the message
+"Congratulations, you have reached your goal" will be displayed, otherwise the message "Sorry you have not reached your goal yet" will be displayed.
+*/
+
+Create or alter procedure spRegistMeasure (@userID int, @Measure float,  @regDate DATE = NULL) as
+IF @regDate IS NULL set @regDate = CONVERT(date, GETDATE())
+
+if exists(Select * from tblOlcum where ID=@userID and Tarih = @regDate)
+	update tblOlcum set Deger = @Measure where KullaniciID = @userID and Tarih = @regDate
+
+else
+	insert into tblOlcum values(@userID, @regDate, @Measure)
+
+Declare @targerWeight float;
+Select @targerWeight = HedefAgirlik from tblKullanici where ID = @userID
+
+if @Measure <= @targerWeight
+raiserror('Congratulations, you have reached your goal',15,1)
+else
+raiserror('Sorry you have not reached your goal yet',15,1)
+go
+
+/*
+	Write down the trigger that will run when any measurement value is inserted, updated or deleted (one for each, not three separately).
+	•	The trigger in question should update the FirstMeasureDate, StartWeight, LastMeasureDate, and CurrentWeight fields in the user table,
+taking into account all the measurement values of the relevant user.
+	•	Assume that no batch updates or deletions are performed on the measurement table. (i.e. inserted and deleted will always return a single user row)
+*/
+
+Create or alter trigger trgControl on tblOlcum after insert, update, delete as
+Declare @userID int, @insertOrUpdateID int, @deleteID int
+select @insertOrUpdateID = KullaniciID from inserted 
+select @deleteID = KullaniciID from deleted
+
+select @userID = ISNULL(@insertOrUpdateID, @deleteID) --This point is the distinct point and really important
+
+Declare @FirstMeasureDate Date, @StartWeight FLOAT, @LastMeasureDate Date, @CurrentWeight Float
+
+Select @FirstMeasureDate = MIN(Tarih) from tblOlcum where KullaniciID = @userID
+Select @StartWeight = Deger from tblOlcum where KullaniciID = @userID and Tarih = @FirstMeasureDate
+
+Select @LastMeasureDate = MAX(Tarih) from tblOlcum where KullaniciID = @userID
+Select @CurrentWeight = Deger from tblOlcum where KullaniciID = @userID and Tarih = @LastMeasureDate
+
+update tblKullanici 
+set 
+ IlkOlcumTarihi = @FirstMeasureDate,
+ BaslangicAgirlik = @StartWeight,
+ SonOlcumTarihi = @LastMeasureDate,
+ MevcutAgirlik = @CurrentWeight
+where ID = @userID
+go
+
+
+/*
+	Write another trigger that will run when any measurement value is entered.
+	•	What is expected from this trigger is to prevent the eighth entry from occurring
+if the user is a free type user and a total of seven measurement values are entered in the relevant table.
+	•	In such a case, a message such as “Free users can enter up to 7 measurements” should also be displayed.
+*/
+
+create or alter trigger trgControlCustomerType on tblOlcum after insert as
+Declare @userID int, @UserType TINYINT, @TotalMeasure smallint
+
+Select @userID = KullaniciID from inserted
+Select @UserType = KullaniciTipi from tblKullanici where ID = @userID
+Select @TotalMeasure = COUNT(*) from tblOlcum where ID = @userID
+
+if @UserType = 0 and @TotalMeasure >7
+Begin
+	raiserror ('Free users can enter up to 7 measurements', 16,1)
+	rollback
+end
+go
