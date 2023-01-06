@@ -40,13 +40,13 @@ go
 select dbo.fncBMI(1.62, 60)
 
 /*
-	Sistemde kayýtlý kullanýcýlarýn bilgilerini aþaðýdaki þekilde getiren bir view yazýnýz.
-		Ad Soyad | Yaþ | Hedef Aðýrlýk | Baþlangýç Aðýrlýk | Son Ölçüm | Mevcut Aðýrlýk | Verilen Kilo | Durum | BMI
+	Write a view that brings the information of the users registered in the system as follows.
+		NameSurname | Age | Target Weight | Starting Weight | Least Measurement | Curent Weight | Weight Lost | State | BMI
 	
-	•	Son Ölçüm: En son kilo ölçüm tarihinden o ana kadar geçen gün sayýsý gösterilecektir.
-	•	Verilen Kilo: Mevcut aðýrlýk ile baþlangýç aðýrlýðýn farkýdýr.
-	•	Durum: Eðer mevcut aðýrlýk hedef aðýrlýktan küçük ya da eþit ise “Hedefe Ulaþýldý”, aksi halde aralarýndaki fark yazýlmalýdýr.
-	•	BMI: Ýlk sorudaki fonksiyon çaðrýlacaktýr. (sistemde boy bilgisinin cm olarak kayýtlý olduðuna dikkat ediniz)
+	•	Last Measurement: The number of days since the last weight measurement date will be displayed.
+	•	Weight Loss: It is the difference between the current weight and the starting weights.
+	•	Status: “Target Reached” if the current weight is less than or equal to the target weight, otherwise the difference between them should be written.
+	•	BMI: The function in the first question will be called. (Please note that height information is recorded in cm in the system)
 
 */
 go
