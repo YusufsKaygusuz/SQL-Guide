@@ -5,13 +5,13 @@
 	Soyad VARCHAR(50) NOT NULL,
 	DogTrh DATE NOT NULL,
 	Yas AS DATEDIFF(yy, DogTrh, GETDATE()),
-	IlkOlcumTarihi DATE, -- Ýlk ölçülen kilo deðerinin girildiði tarih
-	BaslangicAgirlik FLOAT, -- Ýlk ölçülen kilogram deðeri
-	SonOlcumTarihi DATE, -- En son ölçülen kilogram deðerinin girildiði tarih
-	MevcutAgirlik FLOAT, -- En son ölçülen kilogram deðeri		
-	HedefAgirlik FLOAT NOT NULL, -- Kullanýcýnýn hedeflediði kilogram deðeri
-	Boy FLOAT NOT NULL, -- CM olarak girilir
-	KullaniciTipi TINYINT NOT NULL DEFAULT 0 -- 0:Ücretsiz, 1:Ücretli
+	IlkOlcumTarihi DATE, -- The date the first measured weight value was entered
+	BaslangicAgirlik FLOAT, -- First measured kilogram value
+	SonOlcumTarihi DATE, -- The date the last measured kilogram value was entered
+	MevcutAgirlik FLOAT, -- The last measured kilogram value	
+	HedefAgirlik FLOAT NOT NULL, -- The user's target kilogram value
+	Boy FLOAT NOT NULL, -- Entered as CM
+	KullaniciTipi TINYINT NOT NULL DEFAULT 0 -- 0:Free, 1:Paid
 )
 GO
 
