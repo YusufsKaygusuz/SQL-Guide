@@ -3,9 +3,9 @@
 	ogrno CHAR(9) PRIMARY KEY,
 	ad VARCHAR(50) NOT NULL,
 	soyad VARCHAR(50) NOT NULL,
-	GNO FLOAT, -- Öðrencinin genel not ortalamasý. 100 üzerindendir
-	donem TINYINT NOT NULL DEFAULT 0, -- kayýt yenileme oldukça bu deðer 1 arttýrýlýr. Normal süre 8 dönemdir
-	aktif TINYINT NOT NULL DEFAULT 1 -- 0: bitirmiþ, 1: devam ediyor, 2: dondurmuþ
+	GNO FLOAT, -- The student's overall grade point average. out of 100
+	donem TINYINT NOT NULL DEFAULT 0, -- This value is incremented by 1 as the registry refreshes. Normal period is 8 semesters
+	aktif TINYINT NOT NULL DEFAULT 1 -- 0: finished, 1: in progress, 2: frozen
 )
 
 CREATE TABLE tblOgretimOyesi
@@ -33,7 +33,7 @@ CREATE TABLE tblOgrenciDersKayit
 	ders_kodu VARCHAR(10) NOT NULL FOREIGN KEY REFERENCES tblDers(kod),
 	vize INT,
 	final INT,
-	ort AS vize * 0.3 + final * 0.7 -- bir öðrencinin bir dersteki ortalamasý
+	ort AS vize * 0.3 + final * 0.7 -- average of a student in a course
 )
 GO
 
