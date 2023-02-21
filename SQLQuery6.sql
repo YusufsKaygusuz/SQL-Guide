@@ -140,10 +140,11 @@ end
 go
 
 /*
-tblDers tablosundaki kontenjan alaný güncellendiðinde çalýþacak bir Trigger yazýnýz. Eðer kontenjan deðeri kayýtlý öðrenci sayýsýndan az olacak þekilde
-bir güncelleme iþlemi yapýlýyorsa bu iþlem iptal edilmeli ve bu konuda kullanýcý bilgilendirilmelidir.
-Bir defada birden fazla dersin kontenjaný deðiþtirilmek istenmiþ olabileceðinden yukarýda belirtilen kýsýta uymayan bir güncelleme olduðunda tüm güncelleme
-iþleminin iptal edilmesi gerekir.
+Write a Trigger that will run when the quota field in the tblCourses table is updated.
+If an update is made so that the quota value is less than the number of registered students
+, this process should be canceled and the user should be informed about it.
+Since it is possible to change the quota of more than one course at once,
+if there is an update that does not comply with the above-mentioned constraint, the entire update process must be canceled.
 */
 
 create or alter trigger trgCheckQuota on tblDers after update as
