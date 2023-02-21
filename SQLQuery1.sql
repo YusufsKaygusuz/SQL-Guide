@@ -6,7 +6,7 @@ Select ROW_NUMBER() Over(Partition By Country Order By City Desc) As Satir_no,
 country, City, CompanyName
 From dbo.Customers
 
---Herbir ülkedeki en yüksek satýþý yapan satýcýlarýn ID leri
+--IDs of top selling sellers in each country
 Select * From
 (
 Select O.OrderID,
@@ -22,7 +22,7 @@ O.OrderID, CustomerID, EmployeeID, ShipCountry
 Where Satir_No = 1
 Go
 
--- Carpma iþlemi yapan fonksiyon
+-- Carpma iÃ¾lemi yapan fonksiyon
 Create Or Alter Function carpmaIslemi (@sayi1 INT, @sayi2 INT = 10)
 Returns INT
 AS 
@@ -36,17 +36,17 @@ Go
 
 Select dbo.carpmaIslemi(5,6) carpim1, dbo.carpmaIslemi(5, Default)
 
--- Tek, çift ve sifir kontrolü yapan fonksiyon
+-- Function that checks odd, even and zero
 Go
 
--- Girilen sayinin tek, çift veya sifir mi olduðunu kontrol eden fonksiyon
+-- Girilen sayinin tek, Ã§ift veya sifir mi olduÃ°unu kontrol eden fonksiyon
 Create or Alter Function tek_cift_sifir(@number1 INT)
 Returns Varchar(50)
 AS
 Begin
 	Declare @state Varchar(50);
 	if(@number1 % 2 = 0 And @number1 <> 0)
-		select @state = 'number1 çift sayidir';
+		select @state = 'number1 Ã§ift sayidir';
 	
 	Else if(@number1 % 2 = 1)
 		select @state = 'number1 tek sayidir';
@@ -60,7 +60,7 @@ Go
 Select dbo.tek_cift_sifir(5), dbo.tek_cift_sifir(2), dbo.tek_cift_sifir(0)
 Go
 
--- ID bilgisi verilen personelin yýl olarak iþe giriþ tarihini dönen fonksiyon
+-- -- Function that returns the date of employment of the personnel whose ID information is given, in years
 
 Create OR Alter function personelHireDate (@empID INT)
 Returns INT
@@ -80,7 +80,7 @@ Select FirstName +' '+ LastName AS Name_Surname,
 
 Go
 
- -- Ýstenen ülkedeki personellerin adý ve soyadý (bitiþik), yaþý ve çalýþtýðý süreyi veren fonksiyon
+ -- Function that gives the name and surname (adjacent), age and duration of employment of the personnel in the desired country
  Create or Alter Function personelInfo (@country VARCHAR(50))
  Returns table As
  Return
@@ -96,7 +96,7 @@ Select * From dbo.personelInfo('USA')
 
 Go
 
---Verilen müþterinin en son sipariþindeki ürün adý, birim fiyatý ve alýnan miktarý getiren fonksiyon
+-- Function that returns the product name, unit price and quantity received in the last order of the given customer
 Create or alter Function fncSonTeslim(@cusID AS NCHAR(10))
 Returns @tableSip Table(urun_adi Varchar(50), birimFiyat money, miktar smallint)
 AS
