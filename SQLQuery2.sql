@@ -100,7 +100,7 @@ Set @hata = @@ERROR
 IF @hata<>0 GOTO Hata_Duzeltme
 Select COUNT(*) As MiddleTransaction, @hata AS HataKodu From region
 
-Insert Region Values(5,'Test') --PK Hatasý
+Insert Region Values(5,'Test') -- Primary Key Error
 Set @hata = @@ERROR
 IF @hata<>0 Goto Hata_Duzeltme
 Commit
