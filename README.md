@@ -130,3 +130,40 @@ Bu Trigger, "my_table" adlı bir tabloya yeni bir kayıt eklenirken tetiklenir v
 
 Triggers, veritabanı yöneticileri tarafından SQL programlama dilinde kullanılan bir öğedir. Triggers, belirli bir tablodaki bir olay gerçekleştiğinde belirli bir işlemi otomatik olarak gerçekleştiren bir SQL kod bloğudur. Triggers, veri bütünlüğü, güvenlik ve otomatikleştirme gibi birçok avantaj sağlar. Triggers, veritabanı yöneticileri tarafından CREATE TRIGGER komutu kullanılarak yaratılır ve yönetilir.
 
+<h2>📝 Transaction ve Rollback</h2>
+
+Transaction, bir veya birden fazla SQL sorgusunu tek bir işlem olarak işleme alma işlemidir. Bir transaction içindeki tüm sorgular, ya tamamlanacak ya da hepsi başarısız olacaktır. Transaction'lar veri bütünlüğünü korumak için çok önemlidir. Bununla birlikte, her zaman her şey yolunda gitmeyebilir ve bir transaction başarısız olabilir. Bu durumda, Rollback kullanılarak işlem geri alınabilir.
+
+<h2>🔍 Transaction</h2>
+
+Transaction, veritabanındaki işlemleri daha güvenli hale getirmek için kullanılır. Transaction, bir veya birden fazla SQL sorgusunu tek bir işlem olarak işleme alır. Bir transaction içindeki tüm sorgular, ya tamamlanacak ya da hepsi başarısız olacaktır. Transaction'lar, veri bütünlüğünü korumak için çok önemlidir, çünkü bir transaction içindeki sorgulardan biri başarısız olursa, transaction tamamlanmayacak ve yapılan tüm değişiklikler geri alınacaktır.
+
+Örneğin, aşağıdaki SQL kodu, bir transaction başlatır ve "my_table" adlı bir tabloya iki yeni kayıt ekler:
+
+        BEGIN TRANSACTION
+        INSERT INTO my_table (column1, column2) VALUES (value1, value2);
+        INSERT INTO my_table (column1, column2) VALUES (value3, value4);
+        COMMIT TRANSACTION
+           
+Bu SQL kodu, "BEGIN TRANSACTION" ile başlayarak bir transaction başlatır. Daha sonra, "my_table" adlı bir tabloya iki yeni kayıt ekler. Son olarak, "COMMIT TRANSACTION" kullanarak transaction'ı tamamlar ve işlemi onaylar.
+
+<h2>🔍 Rollback</h2>
+
+Bir transaction başarısız olursa, Rollback kullanılarak tüm yapılan değişiklikler geri alınabilir. Rollback, transaction içinde yapılan tüm değişiklikleri geri alarak veritabanını transaction öncesi duruma geri getirir.
+
+Örneğin, aşağıdaki SQL kodu, bir transaction başlatır ve "my_table" adlı bir tabloya iki yeni kayıt ekler. Ancak, ikinci INSERT işlemi başarısız olur ve transaction geri alınır:
+
+    BEGIN TRANSACTION
+    INSERT INTO my_table (column1, column2) VALUES (value1, value2);
+    INSERT INTO my_table (column1, column2) VALUES (value3, value4); -- Bu sorgu hata verecek
+    ROLLBACK TRANSACTION
+
+Bu SQL kodu, "BEGIN TRANSACTION" ile başlayarak bir transaction başlatır. Daha sonra, "my_table" adlı bir tabloya iki yeni kayıt ekler. Ancak, ikinci INSERT sorgusu başarısız olur ve "ROLLBACK TRANSACTION" kullanılarak transaction geri alınır.
+
+<h2>🔍 Özet</h2>
+
+Transaction, bir veya birden fazla SQL sorgusunu tek bir işlem olarak işleme alma işlemidir. Transaction'lar veri bütünlüğünü koruması ve Rollback kullanılarak, bir transaction başarısız olursa yapılan tüm değişiklikler geri alınabilir. Rollback, transaction içinde yapılan tüm değişiklikleri geri alarak veritabanını transaction öncesi duruma geri getirir. Bu özellik, veritabanındaki veri bütünlüğünü korumak için çok önemlidir.
+
+Stored Procedure, View, Function, Transaction ve Rollback, SQL'de veritabanı yönetimi için önemli araçlardır. Bu araçlar, veritabanı tasarımı ve yönetimi için esneklik, güvenlik ve performans sağlarlar. Her bir araç farklı işlevlere sahip olsa da, hepsi veri bütünlüğünü korumak ve veritabanı işlemlerini optimize etmek için birlikte çalışırlar.
+
+🚀 Happy coding! 🎉
