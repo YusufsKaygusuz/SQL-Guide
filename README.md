@@ -1,5 +1,13 @@
 # SQL-Examples
  This SQL examples includes: Function, View, Stored Procedure and etc.
+ 
+ | Birinci Başlık| İkinci Başlık    |
+| ------------- | ---------------- |
+| Functions   | İçerik & Kullanımı           |
+| Views        | İçerik & Kullanımı           |
+| Procedure        | İçerik & Kullanımı & Avantajları         |
+| Triggers        | İçerik  & Kullanımı & Avantajları         |
+| Transaction        | Checkpoint & Rollback           |
 
 <h2>📚 Fonksiyonlar ve Görünümler Hakkında Bilgi</h2>
 
@@ -33,7 +41,7 @@ Bu görünüm, "my_table" adlı tablodan "column_name" sütununu seçer ve bu s�
 
 <h2>💻 Nasıl Kullanılır</h2>
 
-Fonksiyonlar ve Görünümler, SQL programlama dilinde kullanılabilir. Bir fonksiyon tanımlamak veya bir görünüm oluşturmak için, önce SQL sorgu editörüne erişmeniz gerekir. Bu editöre erişmek için, bir SQL veritabanı yönetim sistemi (DBMS) kullanabilirsiniz.
+Fonksiyonlar ve Viewsler, SQL programlama dilinde kullanılabilir. Bir fonksiyon tanımlamak veya bir görünüm oluşturmak için, önce SQL sorgu editörüne erişmeniz gerekir. Bu editöre erişmek için, bir SQL veritabanı yönetim sistemi (DBMS) kullanabilirsiniz.
 
 Fonksiyonlar, CREATE FUNCTION komutu ile oluşturulur ve çağrılmak için SELECT veya diğer SQL sorgu türleri kullanılır. Örneğin, yukarıdaki örnek fonksiyonu çağırmak için aşağıdaki SQL kodu kullanılabilir:
 
