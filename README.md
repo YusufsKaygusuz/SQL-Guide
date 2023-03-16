@@ -95,3 +95,38 @@ Stored Procedure'ler, veritabanı yöneticileri ve uygulama geliştiricileri tar
 <h2>🔍 Özet</h2>
 
 Stored Procedure'ler, SQL programlama dilinde bir öğedir ve bir veya daha fazla SQL sorgusundan oluşan bir programdır. Stored Procedure'ler, performans, güvenlik ve yeniden kullanılabilirlik gibi birçok avantaj sağlar. Stored Procedure'ler, veritabanı yöneticileri tarafından yaratılır ve EXECUTE komutu kullanılarak çağrılır. Stored Procedure'ler, ALTER PROCEDURE komutu kullanılarak düzenlenebilir veya DROP PROCEDURE komutu kullanılarak silinebilir.
+
+<h2>📝 Triggers (Tetikleyiciler)</h2>
+
+Triggers (Tetikleyiciler), veritabanı yöneticileri tarafından SQL programlama dilinde kullanılan bir öğedir. Triggers, belirli bir tablodaki bir olay gerçekleştiğinde (INSERT, UPDATE, DELETE vb.), belirli bir işlemi otomatik olarak gerçekleştiren bir SQL kod bloğudur. Triggers, veritabanı yöneticileri için birçok avantaj sağlar.
+
+<h2>🔍 Avantajlar</h2>
+
+Triggers'ların birkaç avantajı vardır:
+
+1️⃣ Veri bütünlüğü: Triggers, veritabanı yöneticilerinin veri bütünlüğünü sağlamalarına yardımcı olur. Örneğin, bir Trigger, bir tabloya yeni bir kayıt eklendiğinde, bu kaydın diğer tablolardaki ilgili kayıtlarla ilişkilendirilmesini sağlayabilir.
+
+2️⃣ Güvenlik: Triggers, veritabanı güvenliğini artırır. Triggers, kullanıcının belirli bir olayı tetiklemesi gerektiği için, veritabanına kötü amaçlı yazılım eklenmesini önler.
+
+3️⃣ Otomatikleştirme: Triggers, belirli bir olay gerçekleştiğinde belirli bir işlemi otomatik olarak gerçekleştirir. Bu, veritabanı yöneticileri için zaman ve kaynak tasarrufu sağlar.
+
+<h2>📝 Kullanımı</h2>
+
+Triggers, veritabanı yöneticileri tarafından yaratılır ve yönetilir. Triggers, bir tabloya eklendiğinde veya bir tablodan silindiğinde otomatik olarak çalıştırılır. Triggers, belirli bir tabloya eklenirken, CREATE TRIGGER komutu kullanılarak yaratılır.
+
+Örneğin, aşağıdaki SQL kodu, "my_table" adlı bir tabloya INSERT olayı gerçekleştiğinde tetiklenecek bir Trigger yaratır:
+
+    CREATE TRIGGER my_trigger
+    ON my_table
+    AFTER INSERT
+    AS
+    BEGIN
+        -- işlem yapılacak SQL kodları buraya yazılır
+    END
+ 
+Bu Trigger, "my_table" adlı bir tabloya yeni bir kayıt eklenirken tetiklenir ve "BEGIN" ve "END" arasına yazılan SQL kodlarını otomatik olarak çalıştırır.
+
+<h2>🔍 Özet</h2>
+
+Triggers, veritabanı yöneticileri tarafından SQL programlama dilinde kullanılan bir öğedir. Triggers, belirli bir tablodaki bir olay gerçekleştiğinde belirli bir işlemi otomatik olarak gerçekleştiren bir SQL kod bloğudur. Triggers, veri bütünlüğü, güvenlik ve otomatikleştirme gibi birçok avantaj sağlar. Triggers, veritabanı yöneticileri tarafından CREATE TRIGGER komutu kullanılarak yaratılır ve yönetilir.
+
