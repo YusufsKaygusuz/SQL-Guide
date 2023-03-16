@@ -50,5 +50,48 @@ Bu sorgu, "my_view" görünümünü çağırır ve "my_table" tablosundan sadece
 
 Bu README dosyası, SQL programlama dilinde Fonksiyonlar ve Görünümler hakkında genel bilgiler sağlamaktadır. Fonksiyonlar, belirli bir görevi yerine getiren kod bloklarıdır ve sorguları daha okunaklı hale getirmek için kullanılabilir. Görünümler, bir SQL sorgusunun sonucunu depolamak yerine, bu sorgunun sonucunu her zaman bir tablo olarak oluşturan bir sanal tablodur. Görünümler, verilerin daha organize ve erişilebilir hale getirilmesine yardımcı olur. SQL programlama dilinde Fonksiyonlar ve Görünümler kullanarak, verileri daha etkili bir şekilde işleyebilir ve sorguları daha okunaklı hale getirebilirsiniz.
 
+<h2>📝 Stored Procedures (Depolanmış Prosedürler)</h2>
 
+Stored Procedure, SQL programlama dilindeki bir öğedir ve bir veya daha fazla SQL sorgusundan oluşan bir programdır. Bu program, veritabanı tarafında saklanır ve tekrar tekrar kullanılabilen işlemleri otomatikleştirmek için kullanılır. Stored Procedure, veri tabanı yöneticileri ve uygulama geliştiricileri için birçok avantaj sağlar.
 
+<h2>🔍 Avantajlar</h2>
+
+1️⃣ Performans: Stored Procedure'ler, birçok SQL sorgusunu birleştirerek veritabanı performansını artırır. Stored Procedure'ler, SQL sorgularını bir kez derler ve daha sonra kullanıma hazır hale getirirler. Bu nedenle, veri tabanı yöneticileri ve uygulama geliştiricileri, performans sorunlarını çözmek için daha fazla zaman harcamak yerine, depolanan prosedürlerin kullanımı ile daha hızlı sonuçlar elde edebilirler.
+
+2️⃣ Güvenlik: Stored Procedure'ler, veritabanı güvenliğini artırır. Bu, veri tabanı yöneticilerinin ve uygulama geliştiricilerinin, veritabanı üzerindeki hassas verileri korumalarına yardımcı olur. Stored Procedure'ler, SQL enjeksiyon saldırılarına karşı daha iyi koruma sağlar ve veritabanı yöneticilerinin, hassas verilere erişimi kontrol etmelerine yardımcı olur.
+
+3️⃣ Yeniden kullanılabilirlik: Stored Procedure'ler, birçok uygulamada yeniden kullanılabilir. Veritabanı yöneticileri ve uygulama geliştiricileri, aynı kodu tekrar tekrar yazmak yerine, depolanan prosedürleri kullanarak işlemleri otomatikleştirebilirler. Bu, zaman ve kaynakların daha verimli kullanımını sağlar.
+
+<h2>📝 Kullanımı</h2>
+
+Stored Procedure'ler, veritabanı yöneticileri ve uygulama geliştiricileri tarafından yaratılır ve yönetilir. Stored Procedure'ler, veritabanı yöneticileri tarafından, CREATE PROCEDURE komutu kullanılarak yaratılır. Stored Procedure'ler, parametrelerle de kullanılabilir.
+
+Örneğin, aşağıdaki SQL kodu, "my_procedure" adlı bir Stored Procedure yaratır:
+
+    CREATE PROCEDURE my_procedure
+    @parameter1 int,
+    @parameter2 varchar(50)
+    AS
+    BEGIN
+        SELECT *
+        FROM my_table
+        WHERE column1 = @parameter1
+        AND column2 = @parameter2
+    END
+
+Bu Stored Procedure, "my_table" tablosunda "column1" ve "column2" sütunlarına göre verileri filtreleyerek geri döndürür. Bu Stored Procedure, "@parameter1" ve "@parameter2" adlı iki parametre alır.
+
+<h2>📝 Kullanımı (devam)</h2>
+
+Stored Procedure'ler, uygulama geliştiricileri tarafından, EXECUTE komutu kullanılarak çağrılır. Aşağıdaki SQL kodu, yukarıdaki örnekte oluşturulan Stored Procedure'yi çağırır:
+
+    EXECUTE my_procedure
+    Go
+ 
+Bu komut, "my_procedure" Stored Procedure'ünü, "@parameter1" değeri olarak "1" ve "@parameter2" değeri olarak "example" ile çağırır.
+
+Stored Procedure'ler, veritabanı yöneticileri ve uygulama geliştiricileri tarafından yönetilir ve düzenlenir. Stored Procedure'ler, ALTER PROCEDURE komutu kullanılarak düzenlenebilir veya DROP PROCEDURE komutu kullanılarak silinebilir.
+
+<h2>🔍 Özet</h2>
+
+Stored Procedure'ler, SQL programlama dilinde bir öğedir ve bir veya daha fazla SQL sorgusundan oluşan bir programdır. Stored Procedure'ler, performans, güvenlik ve yeniden kullanılabilirlik gibi birçok avantaj sağlar. Stored Procedure'ler, veritabanı yöneticileri tarafından yaratılır ve EXECUTE komutu kullanılarak çağrılır. Stored Procedure'ler, ALTER PROCEDURE komutu kullanılarak düzenlenebilir veya DROP PROCEDURE komutu kullanılarak silinebilir.
