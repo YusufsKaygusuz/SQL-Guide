@@ -166,4 +166,24 @@ Transaction, bir veya birden fazla SQL sorgusunu tek bir işlem olarak işleme a
 
 Stored Procedure, View, Function, Transaction ve Rollback, SQL'de veritabanı yönetimi için önemli araçlardır. Bu araçlar, veritabanı tasarımı ve yönetimi için esneklik, güvenlik ve performans sağlarlar. Her bir araç farklı işlevlere sahip olsa da, hepsi veri bütünlüğünü korumak ve veritabanı işlemlerini optimize etmek için birlikte çalışırlar.
 
+<h2>📝 Checkpoint</h2>
+
+Checkpoint, SQL Server'daki bir veritabanının değişikliklerini disk üzerinde kalıcı hale getirmek için kullanılan bir işlemdir. Checkpoint, veritabanındaki değişiklikleri disk üzerinde yazarak, veritabanını koruma altına alır. Checkpoint, bir SQL Server veritabanı yöneticisi tarafından manuel olarak tetiklenebilir veya SQL Server tarafından otomatik olarak gerçekleştirilebilir.
+
+<h2>🔍 Checkpoint İşlemi</h2>
+
+Checkpoint, bir veritabanında yapılan değişiklikleri disk üzerinde kalıcı hale getirmek için kullanılır. Checkpoint işlemi, log dosyasını disk üzerine yazarak ve veritabanındaki değişiklikleri disk üzerindeki veritabanı dosyasına yazarak gerçekleştirilir.
+
+Manuel bir checkpoint işlemi gerçekleştirmek için, aşağıdaki SQL komutunu kullanabilirsiniz:
+    
+    CHECKPOINT;
+
+Bu komut, veritabanındaki değişiklikleri log dosyasına yazacak ve veritabanındaki değişiklikleri disk üzerindeki veritabanı dosyasına yazarak veritabanını koruma altına alacaktır.
+
+SQL Server, otomatik olarak checkpoint işlemini gerçekleştirir. SQL Server, veritabanındaki değişikliklerin bir kısmını veya tamamını disk üzerindeki veritabanı dosyasına yazarak ve log dosyasını temizleyerek veritabanını koruma altına alır. Otomatik checkpoint, SQL Server tarafından arka planda gerçekleştirilir ve genellikle performans etkilemeden yapılan değişikliklerin sıklığına bağlı olarak belirli aralıklarla gerçekleştirilir.
+
+<h2>🔍 Özet</h2>
+
+Checkpoint, SQL Server'daki bir veritabanının değişikliklerini disk üzerinde kalıcı hale getirmek için kullanılan bir işlemdir. Checkpoint işlemi, log dosyasını disk üzerine yazarak ve veritabanındaki değişiklikleri disk üzerindeki veritabanı dosyasına yazarak gerçekleştirilir. Manuel veya otomatik olarak gerçekleştirilebilir. Checkpoint işlemi, veritabanının korunması ve veri bütünlüğünün sağlanması için önemlidir.
+
 🚀 Happy coding! 🎉
