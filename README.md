@@ -140,10 +140,10 @@ Transaction, veritabanındaki işlemleri daha güvenli hale getirmek için kulla
 
 Örneğin, aşağıdaki SQL kodu, bir transaction başlatır ve "my_table" adlı bir tabloya iki yeni kayıt ekler:
 
-        BEGIN TRANSACTION
-        INSERT INTO my_table (column1, column2) VALUES (value1, value2);
-        INSERT INTO my_table (column1, column2) VALUES (value3, value4);
-        COMMIT TRANSACTION
+      BEGIN TRANSACTION
+      INSERT INTO my_table (column1, column2) VALUES (value1, value2);
+      INSERT INTO my_table (column1, column2) VALUES (value3, value4);
+      COMMIT TRANSACTION
            
 Bu SQL kodu, "BEGIN TRANSACTION" ile başlayarak bir transaction başlatır. Daha sonra, "my_table" adlı bir tabloya iki yeni kayıt ekler. Son olarak, "COMMIT TRANSACTION" kullanarak transaction'ı tamamlar ve işlemi onaylar.
 
