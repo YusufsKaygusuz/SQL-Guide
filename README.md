@@ -1,4 +1,4 @@
-# SQL-Examples
+# SQL Yapıları ve Kullanımı
  
  | Konu Başlıkları| Konu İçerikleri    |
 | ------------- | ---------------- |
