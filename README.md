@@ -1,7 +1,7 @@
 # SQL-Examples
  This SQL examples includes: Function, View, Stored Procedure and etc.
  
- | Birinci Başlık| İkinci Başlık    |
+ | Konu Başlıkları| Konu İçerikleri    |
 | ------------- | ---------------- |
 | Functions   | İçerik & Kullanımı           |
 | Views        | İçerik & Kullanımı           |
